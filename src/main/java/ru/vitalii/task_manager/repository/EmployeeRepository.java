@@ -15,7 +15,7 @@ public interface EmployeeRepository extends JpaRepository<Employee,Long> {
     Optional<Employee> findByFirstName(String firstName);
     boolean existsByEmail(String email);
 
-    @EntityGraph(attributePaths = {"positions", "skills"})
+    @EntityGraph(attributePaths = {"position", "skills"})
     @Query("SELECT e FROM Employee e")
     List<Employee> findAllWithDetails();
 }
