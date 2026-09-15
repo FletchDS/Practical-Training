@@ -31,7 +31,6 @@ public class Project {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ProjectStatus status = ProjectStatus.PLANNED;
 }
