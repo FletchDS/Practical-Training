@@ -10,6 +10,7 @@ import ru.vitalii.task_manager.mapper.EmployeeMapper;
 import ru.vitalii.task_manager.model.Employee;
 import ru.vitalii.task_manager.model.Position;
 import ru.vitalii.task_manager.model.Skill;
+import ru.vitalii.task_manager.model.enums.Role;
 import ru.vitalii.task_manager.repository.EmployeeRepository;
 import ru.vitalii.task_manager.repository.SkillRepository;
 import ru.vitalii.task_manager.service.EmployeeService;
@@ -36,6 +37,9 @@ public class EmployeeServiceImp implements EmployeeService {
             throw new IllegalStateException("Email уже существует: " + request.getEmail());
         }
         Employee employee = employeeMapper.toEntity(request, positionService::findById);
+        employee.setRole(Role.USER);
+        employee.setPassword("");
+
         Employee saved = employeeRepository.save(employee);
         return employeeMapper.toResponse(saved);
     }
