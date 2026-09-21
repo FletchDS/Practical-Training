@@ -33,7 +33,7 @@ public class EmployeeServiceImp implements EmployeeService {
             throw new IllegalArgumentException("Запрос на создание сотрудника не может быть null");
         }
         if (employeeRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email уже существует: " + request.getEmail());
+            throw new IllegalStateException("Email уже существует: " + request.getEmail());
         }
         Employee employee = employeeMapper.toEntity(request, positionService::findById);
         Employee saved = employeeRepository.save(employee);
@@ -62,10 +62,13 @@ public class EmployeeServiceImp implements EmployeeService {
         if (request == null) {
             throw new IllegalArgumentException("Запрос на обновление сотрудника не может быть null");
         }
-        if (employeeRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email уже существует: " + request.getEmail());
-        }
+
         Employee employee = findUserOrThrow(id);
+
+        if (!employee.getEmail().equalsIgnoreCase(request.getEmail())
+                && employeeRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalStateException("Email уже существует: " + request.getEmail());
+        }
 
         employeeMapper.updateEntity(employee, request);
 
@@ -97,9 +100,12 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public EmployeeResponse addSkill(Long employeeId, Long skillId) {
-
         Employee employee = findUserOrThrow(employeeId);
         Skill skill = findSkillOrThrow(skillId);
+
+        if (employee.getSkills().contains(skill)) {
+            return employeeMapper.toResponse(employee);
+        }
 
         employee.getSkills().add(skill);
         Employee updated = employeeRepository.save(employee);
@@ -110,6 +116,10 @@ public class EmployeeServiceImp implements EmployeeService {
     public EmployeeResponse removeSkill(Long employeeId, Long skillId) {
         Employee employee = findUserOrThrow(employeeId);
         Skill skill = findSkillOrThrow(skillId);
+
+        if (!employee.getSkills().contains(skill)) {
+            return employeeMapper.toResponse(employee);
+        }
 
         employee.getSkills().remove(skill);
         Employee updated = employeeRepository.save(employee);
