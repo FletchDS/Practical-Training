@@ -6,15 +6,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vitalii.task_manager.dto.EmployeeRequest;
 import ru.vitalii.task_manager.dto.EmployeeResponse;
 import ru.vitalii.task_manager.dto.SkillResponse;
 import ru.vitalii.task_manager.exception.GlobalExceptionHandler;
+import ru.vitalii.task_manager.security.JwtService;
 import ru.vitalii.task_manager.service.EmployeeService;
 import tools.jackson.databind.ObjectMapper;
 
@@ -29,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(EmployeeController.class)
 @Import(GlobalExceptionHandler.class)
+@AutoConfigureMockMvc(addFilters = false)
 class EmployeeControllerTest {
 
     @Autowired
@@ -39,6 +43,12 @@ class EmployeeControllerTest {
 
     @MockitoBean
     private EmployeeService employeeService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private UserDetailsService userDetailsService;
 
     private EmployeeRequest request;
     private EmployeeResponse response;

@@ -6,15 +6,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vitalii.task_manager.dto.ProjectRequest;
 import ru.vitalii.task_manager.dto.ProjectResponse;
 import ru.vitalii.task_manager.exception.GlobalExceptionHandler;
 import ru.vitalii.task_manager.model.enums.ProjectStatus;
+import ru.vitalii.task_manager.security.JwtService;
 import ru.vitalii.task_manager.service.ProjectService;
 import tools.jackson.databind.ObjectMapper;
 
@@ -29,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ProjectController.class)
 @Import(GlobalExceptionHandler.class)
+@AutoConfigureMockMvc(addFilters = false)
 class ProjectControllerTest {
 
     @Autowired
@@ -39,6 +43,12 @@ class ProjectControllerTest {
 
     @MockitoBean
     private ProjectService projectService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private UserDetailsService userDetailsService;
 
     private ProjectRequest request;
     private ProjectResponse response;
