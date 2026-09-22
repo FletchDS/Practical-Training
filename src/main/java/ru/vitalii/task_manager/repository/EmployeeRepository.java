@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee,Long> {
 
     Optional<Employee> findByFirstName(String firstName);
+    Optional<Employee> findByEmail(String email);
     boolean existsByEmail(String email);
 
     @EntityGraph(attributePaths = {"position", "skills"})
